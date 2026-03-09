@@ -1,24 +1,34 @@
 #include "../include/game.h"
+#include <ncurses.h>
 
 void gameRender(Game *g, WINDOW *win) {
   short x = g->width;
   short y = g->height;
 
-  for (short i = 1; i < y - 1; i++) {
-    for (short j = 1; j < x - 1; j++) {
+  char grass[] = {'.', ',', '\'', '`'};
+
+  for (short i = 0; i < y; i++) {
+    for (short j = 0; j < x; j++) {
 
       if (INDEX(g, j, i).tileType == SPACE) {
+
         mvwaddch(win, i, j, ' ' | COLOR_PAIR(1));
       }
 
       if (INDEX(g, j, i).tileType == FRUIT) {
         mvwaddch(win, i, j, ' ' | COLOR_PAIR(2));
       }
+
       if (INDEX(g, j, i).tileType == SNAKE) {
         mvwaddch(win, i, j, ' ' | COLOR_PAIR(3));
       }
+
       if (INDEX(g, j, i).tileType == HEAD) {
         mvwaddch(win, i, j, ' ' | COLOR_PAIR(4));
+      }
+
+      if (INDEX(g, j, i).tileType == WALL) {
+        mvwaddch(win, i, j, ' ' | COLOR_PAIR(5));
       }
     }
 

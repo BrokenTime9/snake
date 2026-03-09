@@ -25,7 +25,7 @@ int main() {
   snakeInit(&game);
   fruitInit(&game);
   gameRender(&game, win);
-  wtimeout(win, 17);
+  wtimeout(win, 60);
 
   while (1) {
     int ch = wgetch(win);
