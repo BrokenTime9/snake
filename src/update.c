@@ -2,17 +2,25 @@
 
 static const Cords direction[4] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
-void tileUpdate(Game *g, Tile t, Cords old, Cords new) {
+void tileUpdate(Game *g, Tile type, Cords old, Cords new, char mode) {
   short x = g->width;
 
   int tempOldInd = old.tiley * x + old.tilex;
   int tempNewInd = new.tiley * x + new.tilex;
 
-  if (t != SPACE) {
-    g->tiles[tempOldInd].tileType = SPACE;
+  if (mode == 2) {
+    if (type != SPACE) {
+      g->tiles[tempOldInd].tileType = SPACE;
+    }
+
+    g->tiles[tempNewInd].tileType = type;
   }
 
-  g->tiles[tempNewInd].tileType = t;
+  if (mode == 1) {
+
+    g->tiles[tempNewInd].tileType = type;
+  }
+
   /*
   if (t == SPACE) {
     game.tiles[tempNewInd].tileType = SPACE;
@@ -41,7 +49,7 @@ void snakeMoveUpdate(Game *g, Cords *old, Snake *s) {
   short newx = oldx + direction[s->direction].tilex;
   short newy = oldy + direction[s->direction].tiley;
 
-  tileUpdate(g, HEAD, *old, (Cords){newx, newy});
+  tileUpdate(g, HEAD, *old, (Cords){newx, newy}, 2);
 
   s->headPos.tilex = newx;
   s->headPos.tiley = newy;
@@ -56,7 +64,7 @@ void snakeMoveUpdate(Game *g, Cords *old, Snake *s) {
 
     short tempx = s->body[i].tilex;
     short tempy = s->body[i].tiley;
-    tileUpdate(g, SNAKE, (Cords){tempx, tempy}, (Cords){oldx, oldy});
+    tileUpdate(g, SNAKE, (Cords){tempx, tempy}, (Cords){oldx, oldy}, 2);
 
     s->body[i].tilex = oldx;
     s->body[i].tiley = oldy;
@@ -65,46 +73,6 @@ void snakeMoveUpdate(Game *g, Cords *old, Snake *s) {
     oldy = tempy;
   }
 
-  return;
-}
-
-void snakeUpdate(Game *g, Snake *s) {
-  short x = g->width;
-  short y = g->height;
-
-  Cords *fruit = &g->fruit.pos;
-  Cords snake = s->headPos;
-
-  if (snake.tiley < fruit->tiley) {
-    // Down
-    s->direction = TOP;
-    snakeMoveUpdate(g, &snake, s);
-  } else if (snake.tiley > fruit->tiley) {
-    // up
-    s->direction = BOTTOM;
-    snakeMoveUpdate(g, &snake, s);
-  } else {
-    if (snake.tilex < fruit->tilex) {
-      // right
-      s->direction = LEFT;
-      snakeMoveUpdate(g, &snake, s);
-    }
-    if (snake.tilex > fruit->tilex) {
-
-      // left
-      s->direction = RIGHT;
-      snakeMoveUpdate(g, &snake, s);
-    }
-  }
-
-  snake = s->headPos;
-  if (fruit->tiley == snake.tiley && fruit->tilex == snake.tilex) {
-    if (s->length < g->snakeCap) {
-      s->length++;
-    }
-
-    fruitInit(g);
-  }
   return;
 }
 

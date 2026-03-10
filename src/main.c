@@ -6,9 +6,10 @@
 void gameFree(Game *g) {
   free(g->tiles);
 
-  for (char i = 0; i < g->snakeCnt; i++)
+  for (char i = 0; i < g->snakeCnt; i++) {
     free(g->snake[i].body);
-
+    free(g->snake[i].vision);
+  }
   free(g->snake);
 }
 
@@ -25,13 +26,22 @@ int main() {
   snakeInit(&game);
   fruitInit(&game);
   gameRender(&game, win);
-  wtimeout(win, 60);
+  wtimeout(win, 100);
 
   while (1) {
     int ch = wgetch(win);
+    // custom move <-> ai move - comment out to  manual
+    // customMoveUpdate(&game, ch);
 
     gameUpdate(&game, win);
 
+    if (game.snake->headPos.tilex == 1 || game.snake->headPos.tiley == 1) {
+      break;
+    }
+    if (game.snake->headPos.tilex == game.width - 2 ||
+        game.snake->headPos.tiley == game.height - 1) {
+      break;
+    }
     if (ch == 'q')
       break;
     if (ch == 'r') {

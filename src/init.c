@@ -25,22 +25,23 @@ void cursesInit() {
   init_pair(2, COLOR_GREEN, COLOR_RED);
   init_pair(1, COLOR_GREEN, COLOR_WHITE);
   init_pair(4, COLOR_GREEN, COLOR_BLACK);
-  init_pair(5, COLOR_GREEN, COLOR_BLUE);
+  init_pair(5, COLOR_BLACK, COLOR_BLUE);
+  init_pair(6, COLOR_BLACK, COLOR_MAGENTA);
 
   return;
 }
 
 void gameInit(Game *g, short x, short y) {
 
-  g->tiles = malloc(sizeof(Playground) * x * y);
   g->snake = malloc(sizeof(Snake) * 10);
 
   y = y - (y * 0.01); // lower window
 
+  g->tiles = malloc(sizeof(Playground) * x * y);
+
   g->width = x;
   g->height = y;
 
-  g->snakeCap = 20;
   g->snakeCnt = 0;
   g->snakeCntCap = 10;
 
@@ -86,9 +87,20 @@ void snakeInit(Game *g) {
   g->snake[tempCnt].headPos.tiley = sy;
   g->snake[tempCnt].health = 20;
   g->snake[tempCnt].length = 1;
+  g->snake[tempCnt].lengthCap = 20;
+
+  // vision
   g->snake[tempCnt].visionL = 4;
 
-  g->snake[tempCnt].body = malloc(sizeof(Cords) * g->snakeCap);
+  short t = 0;
+  for (int i = 1; i <= g->snake[tempCnt].visionL; i++) {
+    t += (i * 2) + 1;
+  }
+
+  g->snake[tempCnt].visionA = t;
+  g->snake[tempCnt].vision = malloc(sizeof(Cords) * g->snake[tempCnt].visionA);
+
+  g->snake[tempCnt].body = malloc(sizeof(Cords) * g->snake[tempCnt].lengthCap);
   g->snake[tempCnt].body[0].tilex = sx;
   g->snake[tempCnt].body[0].tiley = sy;
 
@@ -114,10 +126,11 @@ void fruitInit(Game *g) {
   rx = (rand() % (x - 2)) + 1;
   ry = (rand() % (y - 2)) + 1;
 
-  if (INDEX(g, rx, ry).tileType == SNAKE) {
-    rx = rx + 1;
-    ry = ry + 1;
-  };
+  while (INDEX(g, rx, ry).tileType == SNAKE ||
+         INDEX(g, rx, ry).tileType == WALL) {
+    rx = (rand() % (x - 2)) + 1;
+    ry = (rand() % (y - 2)) + 1;
+  }
 
   fruitpos = ry * x + rx;
 

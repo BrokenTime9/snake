@@ -8,6 +8,6 @@ typedef enum {
   RIGHT,
 } Direction;
 
-typedef enum { HEAD, SNAKE, FRUIT, SPACE, WALL } Tile;
+typedef enum { HEAD, SNAKE, FRUIT, SPACE, WALL, VISION } Tile;
 
 #endif

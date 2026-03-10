@@ -16,9 +16,12 @@ typedef struct {
   Cords headPos; // head cord
   Cords *body;   // some Cords for body
   int length;
+  int lengthCap;
 
   Cords *vision; // some Cords from head that indicate how far the snake can see
   char visionL;
+  short visionA;
+
   Direction direction; // direction of movement
 
   unsigned char health; // health of sanke
@@ -43,19 +46,35 @@ typedef struct {
 
   char snakeCnt;
   char snakeCntCap;
-  char snakeCap;
 
   short width;
   short height;
 
 } Game;
 
+// init
 void cursesInit();
 void gameInit(Game *g, short x, short y);
 void snakeInit(Game *g);
 void fruitInit(Game *g);
-void gameRender(Game *g, WINDOW *win);
 
+// visual stuff
+void gameRender(Game *g, WINDOW *win);
+void tileUpdate(Game *g, Tile t, Cords old, Cords n, char mode);
+
+// snake ai
+void snakeVision(Game *g, Snake *s);
+void snakeUpdate(Game *g, Snake *s);
+
+// utils
+Cords add(short x, short y, Cords dir, short skip);
+bool isIn(Cords x, Cords *y, short l);
+
+// loop
 void gameUpdate(Game *g, WINDOW *win);
+
+// custom movement
+void customMoveUpdate(Game *g, int ch);
+void snakeMoveUpdate(Game *g, Cords *old, Snake *s);
 
 #endif

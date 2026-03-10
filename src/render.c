@@ -10,6 +10,8 @@ void gameRender(Game *g, WINDOW *win) {
   for (short i = 0; i < y; i++) {
     for (short j = 0; j < x; j++) {
 
+      // snake vision
+
       if (INDEX(g, j, i).tileType == SPACE) {
 
         mvwaddch(win, i, j, ' ' | COLOR_PAIR(1));
@@ -28,7 +30,10 @@ void gameRender(Game *g, WINDOW *win) {
       }
 
       if (INDEX(g, j, i).tileType == WALL) {
-        mvwaddch(win, i, j, ' ' | COLOR_PAIR(5));
+        mvwaddch(win, i, j, '.' | COLOR_PAIR(5));
+      }
+      if (INDEX(g, j, i).tileType == VISION) {
+        mvwaddch(win, i, j, '-' | COLOR_PAIR(6));
       }
     }
 
